@@ -12,12 +12,6 @@
 - 📦 DI integration using a runtime `IMapper` interface
 - ⚡️ Optimized performance with reflection caching
 
-## 📦 Installation
-
-```bash
-dotnet add package SimpleMapper
-```
-
 ## 🛠️ Usage
 
 #### 1. Implement a type mapper
