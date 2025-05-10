@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using SimpleMapper.Abstractions;
+using SimpleMapper.Caching;
 using System.Reflection;
 
 namespace SimpleMapper.Extensions
@@ -12,6 +13,7 @@ namespace SimpleMapper.Extensions
             ArgumentNullException.ThrowIfNull(services);
 
             services.TryAddScoped<IMapper, Mapper>();
+            services.TryAddSingleton<ICachedMapperContainer, CachedMapperContainer>();
 
             return services;
         }

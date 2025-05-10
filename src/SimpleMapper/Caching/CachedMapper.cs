@@ -3,9 +3,9 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
-namespace SimpleMapper
+namespace SimpleMapper.Caching
 {
-    internal sealed class CachedMapper
+    public sealed class CachedMapper
     {
         private readonly Type mapperType;
         private readonly MethodInfo method;
@@ -32,10 +32,7 @@ namespace SimpleMapper
         [DoesNotReturn]
         private static void ThrowMapperNotRegistered(Type sourceType, Type destinationType)
         {
-            throw new MappingException($"""
-                Could not resolve a mapper from '{sourceType.FullName}' to '{destinationType}'.
-                Ensure that 'ITypeMapper<TSource, TDestination>' is registered.
-                """);
+            throw new MappingException($"Could not resolve a mapper from '{sourceType.FullName}' to '{destinationType}'. Ensure that 'ITypeMapper<TSource, TDestination>' is registered.");
         }
     }
 }

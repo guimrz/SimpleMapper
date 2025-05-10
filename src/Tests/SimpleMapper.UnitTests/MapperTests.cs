@@ -1,5 +1,6 @@
 ﻿using Moq;
 using SimpleMapper.Abstractions;
+using SimpleMapper.Caching;
 using SimpleMapper.Exceptions;
 
 namespace SimpleMapper.UnitTests
@@ -19,12 +20,20 @@ namespace SimpleMapper.UnitTests
             var mapperMock = new Mock<ITypeMapper<Source, Destination>>();
             mapperMock.Setup(m => m.Map(source)).Returns(expected);
 
+            var expectedMapperType = typeof(ITypeMapper<Source, Destination>);
+            var cacheMapperMock = new CachedMapper(expectedMapperType, expectedMapperType.GetMethod(nameof(ITypeMapper<,>.Map))!);
+
             var serviceProviderMock = new Mock<IServiceProvider>();
             serviceProviderMock
-                .Setup(sp => sp.GetService(typeof(ITypeMapper<Source, Destination>)))
+                .Setup(sp => sp.GetService(expectedMapperType))
                 .Returns(mapperMock.Object);
 
-            var mapper = new Mapper(serviceProviderMock.Object);
+            var cacheMapperContainerMock = new Mock<ICachedMapperContainer>();
+            cacheMapperContainerMock.Setup(c => c.ResolveMapper(typeof(Source), typeof(Destination)))
+                .Returns(cacheMapperMock);
+
+
+            var mapper = new Mapper(serviceProviderMock.Object, cacheMapperContainerMock.Object);
 
             // Act
             var result = mapper.Map<Destination>(source);
@@ -38,7 +47,9 @@ namespace SimpleMapper.UnitTests
         {
             // Arrange
             var serviceProvider = new Mock<IServiceProvider>().Object;
-            var mapper = new Mapper(serviceProvider);
+            var cacheMapperContainerMock = new Mock<ICachedMapperContainer>();
+
+            var mapper = new Mapper(serviceProvider, cacheMapperContainerMock.Object);
 
             // Act
             var result = mapper.Map<string?>(null);
@@ -52,7 +63,9 @@ namespace SimpleMapper.UnitTests
         {
             // Arrange
             var serviceProvider = new Mock<IServiceProvider>().Object;
-            var mapper = new Mapper(serviceProvider);
+            var cacheMapperContainerMock = new Mock<ICachedMapperContainer>();
+
+            var mapper = new Mapper(serviceProvider, cacheMapperContainerMock.Object);
 
             // Act & Assert
             Assert.Throws<MappingException>(() => mapper.Map<int>(null));
@@ -62,12 +75,19 @@ namespace SimpleMapper.UnitTests
         public void Map_MapperNotRegistered_ThrowsMappingException()
         {
             // Arrange
+            var mockedMapperType = typeof(ITypeMapper<Source, Destination>);
+            var cacheMapperMock = new CachedMapper(mockedMapperType, mockedMapperType.GetMethod(nameof(ITypeMapper<,>.Map))!);
+
             var serviceProviderMock = new Mock<IServiceProvider>();
             serviceProviderMock
                 .Setup(sp => sp.GetService(typeof(ITypeMapper<Source, Destination>)))
                 .Returns((object?)null);
 
-            var mapper = new Mapper(serviceProviderMock.Object);
+            var cacheMapperContainerMock = new Mock<ICachedMapperContainer>();
+            cacheMapperContainerMock.Setup(c => c.ResolveMapper(typeof(Source), typeof(Destination)))
+                .Returns(cacheMapperMock);
+
+            var mapper = new Mapper(serviceProviderMock.Object, cacheMapperContainerMock.Object);
 
             var source = new Source();
 

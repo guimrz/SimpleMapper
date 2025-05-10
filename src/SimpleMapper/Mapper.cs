@@ -1,20 +1,24 @@
 ﻿using SimpleMapper.Abstractions;
-using System.Collections.Concurrent;
-using System.Reflection;
+using SimpleMapper.Caching;
+using SimpleMapper.Exceptions;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SimpleMapper
 {
-    public partial class Mapper : IMapper
+    public class Mapper : IMapper
     {
-        private readonly ConcurrentDictionary<(Type Source, Type Destination), CachedMapper> _cache = new();
 
         protected readonly IServiceProvider serviceProvider;
+        protected readonly ICachedMapperContainer cacheMapperContainer;
 
-        public Mapper(IServiceProvider serviceProvider)
+        public Mapper(IServiceProvider serviceProvider, ICachedMapperContainer cacheMapperContainer)
         {
             ArgumentNullException.ThrowIfNull(serviceProvider);
+            ArgumentNullException.ThrowIfNull(cacheMapperContainer);
 
             this.serviceProvider = serviceProvider;
+            this.cacheMapperContainer = cacheMapperContainer;
         }
 
         public TDestination Map<TDestination>(object? source)
@@ -38,32 +42,21 @@ namespace SimpleMapper
         {
             Type sourceType = source.GetType();
 
-            var cachedMap = ResolveCachedMapper(sourceType, destinationType);
+            var cachedMap = cacheMapperContainer.ResolveMapper(sourceType, destinationType);
 
             return cachedMap.Invoke(source, serviceProvider); ;
-        }
-
-        private CachedMapper ResolveCachedMapper(Type sourceType, Type destinationType)
-        {
-            return _cache.GetOrAdd((sourceType, destinationType), static key =>
-            {
-                var (source, destination) = key;
-                Type mapperType = typeof(ITypeMapper<,>).MakeGenericType(source, destination);
-
-                MethodInfo? mapMethod = mapperType.GetMethod(nameof(ITypeMapper<object, object>.Map), [source]);
-
-                if (mapMethod is null)
-                {
-                    ThrowMissingMapMethod(source, mapperType);
-                }
-
-                return new(mapperType, mapMethod);
-            });
         }
 
         private static bool IsNullable(Type type)
         {
             return Nullable.GetUnderlyingType(type) is not null || !type.IsValueType;
+        }
+
+        [StackTraceHidden]
+        [DoesNotReturn]
+        private static void ThrowNullSourceMappingException<TDestination>()
+        {
+            throw new MappingException($"Cannot map 'null' to non-nullable destination type '{typeof(TDestination).FullName}'. If null mapping is expected, consider using a nullable destination type.");
         }
     }
 }
