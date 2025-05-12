@@ -8,13 +8,14 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<PackageId>SimpleMapper</PackageId>
-		<Version>0.1.0</Version>
+		<PackageId>Guimrz.SimpleMapper</PackageId>
+		<Version>1.0.0-preview</Version>
 		<Authors>José Guimarães</Authors>
 		<Description>Simple and lightweight object mapping library for .NET</Description>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/guimrz/SimpleMapper</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/guimrz/SimpleMapper</RepositoryUrl>
+		<PackageTags>object-mapping, lightweight, dotnet, library</PackageTags>
 		<RepositoryType>git</RepositoryType>
 	</PropertyGroup>
 
