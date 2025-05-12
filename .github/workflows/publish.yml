@@ -16,7 +16,7 @@ jobs:
       - name: Set up .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '6.x'  # Ajuste para a versão do .NET que você está utilizando
+          dotnet-version: 9.0.x
 
       - name: Restore dependencies
         run: dotnet restore ./src/SimpleMapper.sln
