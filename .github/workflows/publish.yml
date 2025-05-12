@@ -28,5 +28,5 @@ jobs:
         run: dotnet pack ./src/SimpleMapper.sln --configuration Release --output ./nupkgs 
 
       - name: Publish Nuget packages
-        run: dotnet nuget push ./nupkgs/*.nupkg --source https://api.nuget.org/v3/index.json --api-key {secret.NUGET_SECRET} --no-symbols true
+        run: dotnet nuget push ./nupkgs/*.nupkg --source https://api.nuget.org/v3/index.json --api-key  ${{ secrets.NUGET_SECRET }} --no-symbols true
         
