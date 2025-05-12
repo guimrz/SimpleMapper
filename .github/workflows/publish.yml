@@ -1,0 +1,34 @@
+name: Publish NuGet Package
+
+on:
+  push:
+    branches:
+      - 'release/*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: '6.x'  # Ajuste para a versão do .NET que você está utilizando
+
+      - name: Restore dependencies
+        run: dotnet restore ./src/SimpleMapper.sln
+
+      - name: Build project
+        run: dotnet build ./src/SimpleMapper.sln --configuration Release
+
+      - name: Pack NuGet package
+        run: dotnet pack ./src/SimpleMapper.sln --configuration Release --output ./nupkgs
+
+      - name: Publish NuGet package
+        uses: NuGet/NuGetAction@v2.0.0
+        with:
+          nuget-api-key: ${{ secrets.NUGET_SECRET }}
+          packages-to-publish: ./nupkgs/*.nupkg
