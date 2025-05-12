@@ -11,10 +11,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up .NET
-        uses: actions/setup-dotnet@v2
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '6.x'  # Ajuste para a versão do .NET que você está utilizando
 
@@ -28,7 +28,7 @@ jobs:
         run: dotnet pack ./src/SimpleMapper.sln --configuration Release --output ./nupkgs
 
       - name: Publish NuGet package
-        uses: NuGet/NuGetAction@v2.0.0
+        uses: NuGet/NuGetAction@v4.0.0
         with:
           nuget-api-key: ${{ secrets.NUGET_SECRET }}
           packages-to-publish: ./nupkgs/*.nupkg
