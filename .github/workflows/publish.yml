@@ -16,7 +16,7 @@ jobs:
       - name: Set up .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '6.x'  # Ajuste para a versão do .NET que você está utilizando
+          dotnet-version: 9.0.x
 
       - name: Restore dependencies
         run: dotnet restore ./src/SimpleMapper.sln
@@ -25,10 +25,7 @@ jobs:
         run: dotnet build ./src/SimpleMapper.sln --configuration Release
 
       - name: Pack NuGet package
-        run: dotnet pack ./src/SimpleMapper.sln --configuration Release --output ./nupkgs
-
-      - name: Publish NuGet package
-        uses: NuGet/NuGetAction@v4.0.0
-        with:
-          nuget-api-key: ${{ secrets.NUGET_SECRET }}
-          packages-to-publish: ./nupkgs/*.nupkg
+        run: dotnet pack ./src/SimpleMapper.sln --configuration Release --output ./nupkgs 
+        
+      - name: Publish Nuget packages
+        run: dotnet nuget push ./nupkgs/*.nupkg --source https://api.nuget.org/v3/index.json --api-key  ${{ secrets.NUGET_SECRET }} --no-symbols true
