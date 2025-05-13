@@ -24,7 +24,7 @@ jobs:
       - name: Build project
         run: dotnet build ./src/SimpleMapper.sln --configuration Release
 
-        - name: Extract version from tag
+      - name: Extract version from tag
         id: extract_version
         run: |
           TAG="${GITHUB_REF#refs/tags/}"
