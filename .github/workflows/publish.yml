@@ -40,9 +40,8 @@ jobs:
       - name: Add GitHub Package source
         run: |
           dotnet nuget add source \
-            --username ${{ github.actor }} \
-            --password ${{ secrets.GITHUB_TOKEN }} \
-            --store-password-in-clear-text \
+            --username ${{ github.repository_owner }} \
+            --password ${{ secrets.NUGET_GITHUB_TOKEN }} \
             --name github "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
 
       - name: Push to GitHub Packages
