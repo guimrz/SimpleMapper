@@ -41,11 +41,12 @@ jobs:
         run: |
           dotnet nuget add source \
             --username ${{ github.repository_owner }} \
-            --password ${{ secrets.NUGET_GITHUB_TOKEN }} \
+            --password ${{ secrets.GITHUB_TOKEN }} \
             --name github "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
 
       - name: Push to GitHub Packages
         run: |
           dotnet nuget push ./nupkgs/*.nupkg \
+            --api-key ${{ secrets.GITHUB_TOKEN }}
             --source github \
             --skip-duplicate
