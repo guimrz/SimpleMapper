@@ -4,6 +4,7 @@
 **SimpleMapper** is a lightweight, explicit, and high-performance object mapping library for .NET. It offers a clean, predictable mappeing library, giving you full control over how your data is transformed between types.
 
 ![Build](https://github.com/guimrz/SimpleMapper/workflows/Build/badge.svg)
+[![NuGet](http://img.shields.io/nuget/vpre/Guimrz.SimpleMapper.svg?label=NuGet)](https://www.nuget.org/packages/Guimrz.SimpleMapper/)
 
 ## 🚀 Features
 
