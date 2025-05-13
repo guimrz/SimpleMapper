@@ -1,9 +1,9 @@
 name: Publish NuGet Package
 
 on:
-  push:
-    tags:
-      - 'releases/*/*'
+  release:
+    types:
+      - published
 
 jobs:
   build:
@@ -24,15 +24,8 @@ jobs:
       - name: Build project
         run: dotnet build ./src/SimpleMapper.sln --configuration Release
 
-      - name: Extract version from tag
-        id: extract_version
-        run: |
-          TAG="${GITHUB_REF#refs/tags/}"
-          VERSION=$(echo "$TAG" | awk -F/ '{print $3}')
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-
       - name: Pack NuGet package
-        run: dotnet pack ./src/SimpleMapper.sln --configuration Release --output ./nupkgs /p:PackageVersion=${{ steps.extract_version.outputs.version }}
+        run: dotnet pack ./src/SimpleMapper.sln --configuration Release --output ./nupkgs /p:PackageVersion=${{ github.event.release.tag_name }}
 
       - name: Publish to NuGet.org
         run: dotnet nuget push ./nupkgs/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_SECRET }} --skip-duplicate
