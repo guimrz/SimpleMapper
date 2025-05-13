@@ -35,7 +35,7 @@ jobs:
         run: dotnet pack ./src/SimpleMapper.sln --configuration Release --output ./nupkgs /p:PackageVersion=${{ steps.extract_version.outputs.version }}
 
       - name: Publish to NuGet.org
-        run: dotnet nuget push ./nupkgs/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_SECRET }} --no-symbols true
+        run: dotnet nuget push ./nupkgs/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_SECRET }}
         
       - name: Push to GitHub Packages
         env:
