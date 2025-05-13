@@ -5,7 +5,6 @@
 
 ![Build](https://github.com/guimrz/SimpleMapper/workflows/Build/badge.svg)
 [![NuGet](http://img.shields.io/nuget/vpre/Guimrz.SimpleMapper.svg?label=NuGet)](https://www.nuget.org/packages/Guimrz.SimpleMapper/)
-![GitHub package.json version](https://img.shields.io/github/package-json/v/guimrz/SimpleMapper)
 
 ## 🚀 Features
 
