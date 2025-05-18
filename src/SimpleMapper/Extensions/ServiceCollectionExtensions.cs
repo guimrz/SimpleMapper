@@ -8,6 +8,12 @@ namespace SimpleMapper.Extensions
 {
     public static class ServiceCollectionExtensions
     {
+        /// <summary>
+        /// Adds the SimpleMapper services to the specified <see cref="IServiceCollection"/>.
+        /// </summary>
+        /// <param name="services">The service collection to add the mapper to.</param>
+        /// <returns>The <paramref name="services"/> instance for fluent chainning.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> is null.</exception>
         public static IServiceCollection AddSimpleMapper(this IServiceCollection services)
         {
             ArgumentNullException.ThrowIfNull(services);
@@ -18,12 +24,26 @@ namespace SimpleMapper.Extensions
             return services;
         }
 
+        /// <summary>
+        /// Registers a type mapper of the specified generic type in the service collection.
+        /// </summary>
+        /// <typeparam name="TTypeMapper">The mapper type implementing <c>ITypeMapper&lt;TSource, TDestination&gt;</c>.</typeparam>
+        /// <param name="services">The service collection to add the mapper to.</param>
+        /// <returns>The <paramref name="services"/> instance for fluent chainning.</returns>
         public static IServiceCollection RegisterTypeMapper<TTypeMapper>(this IServiceCollection services)
             where TTypeMapper : class
         {
             return services.RegisterTypeMapper(typeof(TTypeMapper));
         }
 
+        /// <summary>
+        /// Registers a specific mapper type in the service collection if it implements one or more <c>ITypeMapper&lt;TSource, TDestination&gt;</c> interfaces.
+        /// </summary>
+        /// <param name="services">The service collection to add the mapper to.</param>
+        /// <param name="mapperType">The mapper type to register.</param>
+        /// <returns>The <paramref name="services"/> instance for fluent chainning.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> or <paramref name="mapperType"/> is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown when <paramref name="mapperType"/> does not implement any ITypeMapper interface.</exception>
         public static IServiceCollection RegisterTypeMapper(this IServiceCollection services, Type mapperType)
         {
             ArgumentNullException.ThrowIfNull(services);
@@ -42,6 +62,13 @@ namespace SimpleMapper.Extensions
             return services;
         }
 
+        /// <summary>
+        /// Scans the specified assembly and registers all valid mappers that implement <c>ITypeMapper&lt;TSource, TDestination&gt;</c>.
+        /// </summary>
+        /// <param name="services">The service collection to add the mappers to.</param>
+        /// <param name="assembly">The assembly to scan for mapper types.</param>
+        /// <returns>The <paramref name="services"/> instance for fluent chainning.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> or <paramref name="assembly"/> is null.</exception>
         public static IServiceCollection RegisterTypeMappersFromAssembly(this IServiceCollection services, Assembly assembly)
         {
             ArgumentNullException.ThrowIfNull(services);
